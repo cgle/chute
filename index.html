@@ -10,8 +10,8 @@
 <div class="container">
     <h1>Chute image gallery</h1>
     <form class="form-inline">
-        <input type="text" class="form-control" placeholder="Type album ID">
-        <button class="btn btn-primary">Show album</button>
+        <input type="text" name="album" id="album" class="form-control" placeholder="Type album ID">
+        <button class="btn btn-primary show-album">Show album</button>
     </form>
     <hr/>
     <div id="image-gallery" class="js-masonry">
@@ -48,8 +48,10 @@
     })
 
     var Images = Backbone.Collection.extend({
-        url: function(){return '/aus6kwrg/assets?per_page=20&page='+this.page},
+        url: function(){return '/'+this.album+'/assets?per_page=20&page='+this.page},
         page:1,
+        /* To be implemented later */
+        album:'aus6kwrg',
         parse: function(data){
             return data.data;
         }
@@ -81,11 +83,12 @@
                     var template = _.template($('#image-list-template').html(), {images: images.models});
                     $(that.el).append(template);
                     that.isLoading = false;
-            }}
+            }},
+                error: function(){alert('Error fetching data from Chute')}
             })
         },
 
-        events:{'scroll':'loadmore'},
+        events:{'scroll':'loadmore','click .show-album':'showalbum'},
         loadmore: function(){
             if (!this.isLoading && $(window).scrollTop() == $(document).height() - $(window).height() && !this.eof){
                 this.imageCollection.page+= 1; // Load next page

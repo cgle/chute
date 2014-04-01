@@ -61,6 +61,7 @@
         el:'#image-gallery',
         initialize: function(){
             this.isLoading = false;
+            this.eof = false;
             this.imageCollection = new Images();
             var self = this;
             $(window).bind('scroll', function (ev) {
@@ -75,18 +76,19 @@
             this.isLoading = true;
             this.imageCollection.fetch({
                 success: function(images){
+                    if (images.models.length == 0 ){that.eof = true}
+                    else {
                     var template = _.template($('#image-list-template').html(), {images: images.models});
                     $(that.el).append(template);
                     that.isLoading = false;
-                }
+            }}
             })
         },
 
         events:{'scroll':'loadmore'},
         loadmore: function(){
-            if (!this.isLoading && $(window).scrollTop() == $(document).height() - $(window).height() ){
+            if (!this.isLoading && $(window).scrollTop() == $(document).height() - $(window).height() && !this.eof){
                 this.imageCollection.page+= 1; // Load next page
-                console.log(this.imageCollection.page);
                 this.loadResults();
             }
         }

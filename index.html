@@ -90,7 +90,7 @@
 
         events:{'scroll':'loadmore','click .show-album':'showalbum'},
         loadmore: function(){
-            if (!this.isLoading && $(window).scrollTop() >= $(document).height() - $(window).height() && !this.eof){
+            if (!this.isLoading && $(window).scrollTop() == $(document).height() - $(window).height() && !this.eof){
                 this.imageCollection.page+= 1; // Load next page
                 this.loadResults();
             }
